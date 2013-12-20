@@ -183,8 +183,8 @@ class IrcBot extends Adapter
         else if options.nickpass and from is 'NickServ' and
                 (text.indexOf('Password accepted') isnt -1 or
                  text.indexOf('identified') isnt -1)
-          for room in options.rooms
-            @join room
+          #for room in options.rooms
+            #@join room
 
     if options.connectCommand?
       bot.addListener 'registered', (message) ->

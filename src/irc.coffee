@@ -136,6 +136,7 @@ class IrcBot extends Adapter
       realName: process.env.HUBOT_IRC_REALNAME
       port:     process.env.HUBOT_IRC_PORT
       rooms:    process.env.HUBOT_IRC_ROOMS.split(",")
+      roomsIgnored: process.env.HUBOT_IRC_ROOMS_IGNORED.split(",")
       server:   process.env.HUBOT_IRC_SERVER
       password: process.env.HUBOT_IRC_PASSWORD
       nickpass: process.env.HUBOT_IRC_NICKSERV_PASSWORD
@@ -183,8 +184,8 @@ class IrcBot extends Adapter
         else if options.nickpass and from is 'NickServ' and
                 (text.indexOf('Password accepted') isnt -1 or
                  text.indexOf('identified') isnt -1)
-          #for room in options.rooms
-            #@join room
+          for room in options.rooms
+            @join room
 
     if options.connectCommand?
       bot.addListener 'registered', (message) ->
@@ -242,6 +243,9 @@ class IrcBot extends Adapter
       console.log('%s has joined %s', who, channel)
       user = self.createUser channel, who
       self.receive new EnterMessage(user)
+
+      if 0 <= options.roomsIgnored.indexOf(channel)
+        bot.part channel
 
     bot.addListener 'part', (channel, who, reason) ->
       console.log('%s has left %s: %s', who, channel, reason)
